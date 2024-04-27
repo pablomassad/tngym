@@ -1,0 +1,7 @@
+{
+  "name": "com.pp.tngym",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "custom"
+}
