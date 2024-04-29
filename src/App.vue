@@ -4,7 +4,7 @@
 
 <script setup>
 import { onMounted, watch } from 'vue'
-import { main } from 'fwk-quasar'
+import { main } from 'fwk-q-main'
 import { useRouter } from 'vue-router'
 import { ENVIRONMENTS } from './environments'
 
@@ -19,7 +19,7 @@ onMounted(() => {
             isMobile: false,
             appname: 'tngym',
             origApp: 'tngym',
-            tool: '/ring'
+            tool: '/login'
         },
         data: {}
     }

@@ -1,7 +1,6 @@
 <template>
-    <Layout />
+    <div></div>
 </template>
 
 <script setup>
-import Layout from 'fwk-q-layout'
 </script>

@@ -11,3 +11,51 @@ Reserva de Turnos: Los usuarios pueden seleccionar una hora específica para res
 Notificaciones y Recordatorios: Envía notificaciones automáticas a los usuarios antes de su turno reservado. Esto podría ser a través de correos electrónicos, mensajes de texto o notificaciones push en la aplicación. Los recordatorios ayudarán a los usuarios a no perderse sus sesiones de entrenamiento.
 
 Gestión de Cancelaciones y Reasignaciones: Permite a los usuarios cancelar o reprogramar sus turnos si surge algún imprevisto. Esto podría incluir una política de cancelación, donde los usuarios puedan liberar su turno para que otros lo reserven.
+
+======================================================================================
+Una aplicación móvil para la selección de turnos puede ser una herramienta valiosa para gestionar eficientemente los horarios de los empleados. A continuación, te presento un bosquejo básico de cómo podría verse una aplicación de este tipo:
+
+Inicio de Sesión:
+Los usuarios inician sesión con sus credenciales (nombre de usuario y contraseña).
+Pueden ser empleados o administradores.
+
+Calendario de Turnos:
+Los usuarios ven un calendario con los días y horarios disponibles.
+Pueden seleccionar un día y ver los turnos disponibles.
+Los turnos se muestran en bloques de 1 hora.
+
+Reserva de Turnos:
+Los usuarios pueden reservar hasta 5 turnos en el mismo horario.
+Al seleccionar un turno, se les pide confirmación.
+Si ya tienen 5 turnos reservados en ese horario, se les notifica.
+
+Notificaciones:
+Los usuarios reciben notificaciones cuando se acerca la hora de su turno.
+También se les notifica si hay cambios en los turnos.
+
+Perfil de Usuario:
+Los usuarios pueden ver su historial de turnos reservados.
+Pueden editar su perfil y cambiar su contraseña.
+
+Administración:
+Los administradores pueden agregar o eliminar turnos.
+Pueden ver un resumen de los turnos reservados por cada empleado.
+Pueden enviar notificaciones a todos los usuarios.
+Recuerda que este es solo un bosquejo inicial. Una aplicación completa requeriría más detalles de diseño, como la interfaz de usuario, la base de datos para almacenar los turnos y la lógica para gestionar las reservas.
+
+
+
++-----------------------------------+
+|          Calendario de Turnos      |
++-----------------------------------+
+| Fecha: 2024-04-27                 |
+|                                   |
+| 09:00 AM - 10:00 AM   [5/5]       |
+| 10:00 AM - 11:00 AM   [3/5]       |
+| 11:00 AM - 12:00 PM   [2/5]       |
+| 12:00 PM - 01:00 PM   [5/5]       |
+| 01:00 PM - 02:00 PM   [1/5]       |
+| ...                               |
+|                                   |
+| [Seleccionar Turno]               |
++-----------------------------------+
