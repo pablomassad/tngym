@@ -3,7 +3,11 @@
 @import 'fonts/titilium/titilium';
 @import 'fonts/roboto/roboto';
 
-
+.mainFrame {
+  max-width: 600px;
+  margin: auto;
+  padding: 5px;
+}
 
 body {
   background: transparent !important;
