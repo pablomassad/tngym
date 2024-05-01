@@ -2,8 +2,10 @@ import { reactive, readonly } from 'vue'
 import axios from 'redaxios'
 import professionals from 'src/pages/professionals.json'
 import fb from 'fwk-q-firebase'
+import { ENVIRONMENTS } from 'src/environments'
 
 let srv
+fb.initFirebase(ENVIRONMENTS.firebase)
 
 const state = reactive({
     staff: professionals,

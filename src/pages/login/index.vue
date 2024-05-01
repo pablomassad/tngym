@@ -6,7 +6,7 @@
             </div>
             <div class="loginFrame">
                 <div class="panel">
-                    <q-tabs v-model="tab" dense class="text-grey" active-color="primary" indicator-color="primary" align="justify" narrow-indicator>
+                    <q-tabs v-model="tab" class="text-grey" active-color="primary" indicator-color="primary" align="justify">
                         <q-tab name="login" label="Ingresar" />
                         <q-tab name="register" label="Registrarse" />
                     </q-tabs>
@@ -27,6 +27,9 @@
                                     </q-avatar>
                                 </template>
                             </q-input>
+                            <div class="forgotPwd">
+                                Olvidaste tu contraseña?
+                            </div>
                         </q-tab-panel>
                         <q-tab-panel name="register" class="registerPanel">
                             <q-input filled color="black" v-model="name" label="Nombre">
@@ -56,14 +59,14 @@
             </div>
             <div class="btnFrame">
                 <div class="btnContainer">
-                    <div class="btnLogin" @click="login">
+                    <div class="btnLogin" @click="submit(tab)">
                         <q-icon name="person"></q-icon>
                     </div>
                 </div>
             </div>
-            <div class="googleFrame">
+            <div class="googleFrame" v-if="tab === 'login'" @click="submit('google')">
                 <img src="images/google.png" class="googleIcon" />
-                <div class="googleText">Googgle</div>
+                <div class="googleText">Google</div>
             </div>
         </div>
     </div>
@@ -71,8 +74,16 @@
 
 <script setup>
 import { ref } from 'vue'
+import store from './store'
 
 const tab = ref('login')
+const name = ref()
+const email = ref()
+const password = ref()
+
+const submit = (val) => {
+    store.actions.login(val, email.value, password.value, name.value)
+}
 
 </script>
 
@@ -133,6 +144,12 @@ const tab = ref('login')
     margin-top: 15px;
 }
 
+.forgotPwd {
+    color: rgb(29, 91, 172);
+    font-size: 18px;
+
+}
+
 .panel {
     max-width: 500px;
     margin: auto
@@ -141,7 +158,7 @@ const tab = ref('login')
 .loginPanel {
     display: grid;
     row-gap: 10px;
-    height: 180px;
+    height: 200px;
     box-shadow: inset 2px 2px 4px gray;
     margin-bottom: 50px;
     border-radius: 5px;
@@ -151,7 +168,7 @@ const tab = ref('login')
 .registerPanel {
     display: grid;
     row-gap: 10px;
-    height: 20vh;
+    height: 250px;
     box-shadow: inset 2px 2px 4px gray;
     margin-bottom: 50px;
     border-radius: 5px;
@@ -160,14 +177,14 @@ const tab = ref('login')
 
 .googleFrame {
     border-radius: 5px;
-    width: 180px;
+    width: 150px;
     background-color: lightgray;
     box-shadow: 2px 2px 5px black;
     display: flex;
     justify-content: left;
     padding: 10px;
     position: absolute;
-    bottom: 5vh;
+    bottom: 70px;
     left: 0;
     right: 0;
     margin: auto;
@@ -175,16 +192,16 @@ const tab = ref('login')
 
 .googleFrame:active {
     box-shadow: none;
-    bottom: 97px;
+    bottom: 72px;
 }
 
 .googleIcon {
-    height: 40px;
+    height: 30px;
     padding: 0 10px;
 }
 
 .googleText {
-    font-size: 25px;
+    font-size: 20px;
     color: #333;
     text-shadow: 1px 1px 1px white;
 }
