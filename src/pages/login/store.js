@@ -23,6 +23,9 @@ const actions = {
         }
         console.log('result login:', result)
         return result
+    },
+    forgotPass (email) {
+        fb.forgotPassword(email)
     }
 }
 
