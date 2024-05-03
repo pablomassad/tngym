@@ -2,7 +2,7 @@
     <div class="loginBack">
         <div class="mainFrame  ">
             <div class="logoFrame">
-                <img src="images/tn.png" class="logo" />
+                <img src="images/tnFull.png" class="logo" />
             </div>
             <div class="loginFrame">
                 <div class="panel" v-if="false">
@@ -128,6 +128,8 @@ import store from './store'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
+
+console.log('Login Contructor.........')
 
 const tab = ref('login')
 const name = ref()

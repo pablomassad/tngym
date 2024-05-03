@@ -1,11 +1,3 @@
-Implementar nueva apk:
-    1. Arranca y abre scanner
-    2. Scanea QR de la pagina de administracion (luego de elegir profesional)
-    3. La apk queda configurada para el profesional automaticamente hasta que se desinstale
-
-
-
-
 Reserva de Turnos: Los usuarios pueden seleccionar una hora específica para reservar su turno en el gimnasio. Puedes implementar un calendario interactivo donde los usuarios vean las horas disponibles y elijan la que mejor se adapte a su horario.
 
 Notificaciones y Recordatorios: Envía notificaciones automáticas a los usuarios antes de su turno reservado. Esto podría ser a través de correos electrónicos, mensajes de texto o notificaciones push en la aplicación. Los recordatorios ayudarán a los usuarios a no perderse sus sesiones de entrenamiento.

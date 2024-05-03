@@ -1,0 +1,17 @@
+{
+  "name": "fwk-q-layout",
+  "version": "0.1.39",
+  "description": "Framework main store",
+  "main": "index.vue",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "fwk"
+  ],
+  "type": "module",
+  "author": "PAM",
+  "license": "ISC",
+  "homepage": "http://www.teco.com.ar",
+  "dependencies": {}
+}

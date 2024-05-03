@@ -1,5 +1,6 @@
 import Admin from '../pages/admin/index.vue'
-import Booking from '../pages/booking/index.vue'
+import Bookings from '../pages/bookings/index.vue'
+import Shifts from '../pages/shifts/index.vue'
 import Login from '../pages/login/index.vue'
 
 const routes = [
@@ -8,7 +9,8 @@ const routes = [
         component: () => import('layouts/MainLayout.vue'),
         children: [
             { path: '/admin', component: Admin },
-            { path: '/booking', component: Booking }
+            { path: '/bookings', component: Bookings },
+            { path: '/shifts', component: Bookings }
         ]
     },
     { path: '/login', component: Login },
