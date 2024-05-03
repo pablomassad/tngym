@@ -1,65 +1,113 @@
 <template>
-    <div>
-        <q-page @scroll="handleScroll">
-            <div v-if="loadingPrev">cargando días anteriores...</div>
-            <div v-for="item in store.state.bookings" :key="item.id" class="bookingCard">
-                <div class="itemStyle"> {{ item.day }}</div>
-                <div>
-                    <div v-for="shift in item.shifts" :key="shift.id" class="shiftList">
-                        <div class="hours">{{ shift.id }}:00 hs</div>
-                    </div>
-                </div>
-                <q-icon color="primary" name="edit" size="sm" s />
+    <div class="navFrame">
+        <div class="month">{{ store.state.month }}</div>
+        <div class="grdNav">
+            <q-icon name="navigate_before" class="arrow" @click="onPrevDay"></q-icon>
+            <div class="dateFrame">
+                <div class="dateStyle">{{ store.state.dayName }}</div>
+                <div class="dateStyle">{{ store.state.dayNum }}</div>
             </div>
-            <div v-if="loadingNext">cargando proximos días...</div>
-        </q-page>
-        <q-btn round @click="goShift" color="primary" size="md" icon="add" class="addShift"></q-btn>
+            <q-icon name="navigate_next" class="arrow" @click="onNextDay"></q-icon>
+        </div>
+    </div>
+    <div class="hoursFrame">
+        <div v-for="item in store.state.hourRange" :key="item">
+            <div class="hourCard">
+                <q-checkbox v-model="item.selected"></q-checkbox>
+                <div class="hour"> {{ item.hour }}:00 hs</div>
+                <div class="vacancy">
+                    <q-rating size="md" v-model="item.occupation" icon="stars" color="primary" />
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { onMounted } from 'vue'
 import { ui } from 'fwk-q-ui'
 import store from './store'
+import appStore from 'src/pages/appStore'
 import router from 'src/router'
 
-console.log('Bookings Contructor.........')
-
-const loadingPrev = ref(false)
-const loadingNext = ref(false)
+console.log('Shifts Contructor.........')
 
 onMounted(() => {
-    ui.actions.setTitle('Mis reservas')
+    ui.actions.setTitle('Mis turnos')
+    store.actions.setDate(appStore.state.selectedItem.id)
+    store.actions.getShiftsByDate(0)
 })
 
-const handleScroll = (event) => {
-    console.log('handleScroll event:', event.target)
-    if (event.target.scrollTop === 0 && !loadingPrev.value) {
-        loadingPrev.value = true
-        loadPrev().then(() => {
-            loadingPrev.value = false
-        })
-    } else if (event.target.scrollTop + event.target.clientHeight >= event.target.scrollHeight && !loadingNext.value) {
-        loadingNext.value = true
-        loadNext().then(() => {
-            loadingNext.value = false
-        })
-    }
+const onPrevDay = () => {
+    store.actions.getShiftsByDate(-1)
 }
-const loadPrev = () => {
-    // Implementa la lógica para cargar más contenido al hacer scroll hacia arriba
+const onNextDay = () => {
+    store.actions.getShiftsByDate(+1)
 }
-const loadNext = () => {
-    // Implementa la lógica para cargar más contenido al hacer scroll hacia abajo
+const evalCheck = (hr) => {
+
 }
-const goShift = (item) => {
-    store.actions.setSelectedItem(item)
+const save = (item) => {
+    store.actions.saveShift(item)
     router.push('/shifts')
 }
 
 </script>
 
 <style scoped>
+.arrow {
+    font-size: 30px;
+    /*text-shadow: 1px 1px 1px white;*/
+}
+
+.month {
+    font-size: 20px;
+    text-align: center;
+    text-transform: capitalize;
+}
+
+.navFrame {
+    padding: 20px;
+    position: fixed;
+    width: 100%;
+}
+
+.hour {
+    font-size: 18px;
+}
+
+.grdNav {
+    display: grid;
+    grid-template-columns: 40px 1fr 40px;
+    align-items: center;
+    justify-items: center;
+}
+
+.hoursFrame {
+    margin: 16px;
+    margin-top: 110px;
+    height: calc(100vh - 164px);
+    overflow-y: auto;
+}
+
+.hourCard {
+    display: grid;
+    align-items: center;
+    grid-template-columns: 40px 120px 1fr;
+}
+
+.dateStyle {
+    font-size: 20px;
+    text-transform: capitalize;
+    padding: 0 5px;
+    font-weight: bold;
+}
+
+.dateFrame {
+    display: flex;
+    justify-content: center;
+}
+
 .itemStyle {
     font-weight: bold;
 }

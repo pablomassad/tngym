@@ -6,7 +6,7 @@
                     <slot name="title">
                         <div class="bar">
                             <img src="images/tn.png" class="logo" />
-                            <div @click="showInfo" v-touch-swipe.mouse.right="setMockMode" class="text-h6 title">{{ ui.state.title }}</div>
+                            <div class="text-h6 title">{{ ui.state.title }}</div>
                             <div></div>
                         </div>
                     </slot>
@@ -251,6 +251,7 @@ const setMockMode = () => {
 .tbxFrame {
     background: rgb(0 120 218); // -webkit-linear-gradient(#2675b5, #004f7d) !important;
     font-size: 2rem;
+    padding: 0 10px;
 }
 
 .body--light {

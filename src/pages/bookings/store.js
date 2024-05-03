@@ -8,7 +8,6 @@ const state = reactive({
     bookings: [
         {
             id: 240505,
-            day: 'lunes 1',
             shifts: [
                 {
                     id: '8',
@@ -36,7 +35,6 @@ const state = reactive({
         },
         {
             id: 240506,
-            day: 'martes 2',
             shifts: [
                 {
                     id: '10',

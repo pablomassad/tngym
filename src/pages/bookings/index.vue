@@ -9,7 +9,7 @@
                         <div class="hours">{{ shift.id }}:00 hs</div>
                     </div>
                 </div>
-                <q-icon color="primary" name="edit" size="sm" s />
+                <q-icon color="primary" name="edit" size="sm" @click="goShift(item)" />
             </div>
             <div v-if="loadingNext">cargando proximos días...</div>
         </q-page>
@@ -21,7 +21,10 @@
 import { ref, onMounted } from 'vue'
 import { ui } from 'fwk-q-ui'
 import store from './store'
-import router from 'src/router'
+import appStore from 'src/pages/appStore'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 console.log('Bookings Contructor.........')
 
@@ -53,7 +56,7 @@ const loadNext = () => {
     // Implementa la lógica para cargar más contenido al hacer scroll hacia abajo
 }
 const goShift = (item) => {
-    store.actions.setSelectedItem(item)
+    appStore.actions.setSelectedItem(item)
     router.push('/shifts')
 }
 

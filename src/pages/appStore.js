@@ -7,11 +7,16 @@ let srv
 fb.initFirebase(ENVIRONMENTS.firebase)
 
 const state = reactive({
-    users: []
+    users: [],
+    selectedItem: undefined
 })
 const actions = {
     async init () {
         srv = await axios.create()
+    },
+    setSelectedItem (item) {
+        console.log('store setSelectedItem:', item)
+        state.selectedItem = item
     },
     async logRing (data) {
         let doc = await fb.getDocument('countByDay', data.dia)
