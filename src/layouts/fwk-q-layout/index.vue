@@ -195,6 +195,10 @@ const confirmBack = () => {
                 prompt.value = false
                 resolve(false)
             }
+            onCancelDialog.value = () => {
+                prompt.value = false
+                resolve(false)
+            }
         } else { resolve(true) }
     })
 }

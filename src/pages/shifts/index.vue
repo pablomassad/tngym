@@ -11,47 +11,102 @@
         </div>
     </div>
     <div class="hoursFrame">
-        <div v-for="item in store.state.hourRange" :key="item">
+        <div v-for="item in localShifts" :key="item">
             <div class="hourCard">
-                <q-checkbox v-model="item.selected"></q-checkbox>
+                <q-checkbox v-model="item.selected" @update:model-value="onSelection(item)"></q-checkbox>
                 <div class="hour"> {{ item.hour }}:00 hs</div>
                 <div class="vacancy">
-                    <q-rating size="md" v-model="item.occupation" icon="stars" color="primary" />
+                    <q-rating size="md" v-model="item.occupation" icon="person" color="primary" readonly />
                 </div>
             </div>
         </div>
     </div>
+    <ConfirmDialog :prompt="prompt" :message="dialogMessage" :onCancel="onCancelDialog" :onAccept="onAcceptDialog" />
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { ui } from 'fwk-q-ui'
+import ConfirmDialog from 'fwk-q-confirmdialog'
 import store from './store'
 import appStore from 'src/pages/appStore'
-import router from 'src/router'
 
-console.log('Shifts Contructor.........')
+console.log('Shifts CONSTRUCTOR')
 
-onMounted(() => {
+const localShifts = ref([])
+const prompt = ref(false)
+const dialogMessage = ref()
+const onAcceptDialog = ref()
+const onCancelDialog = ref()
+
+onMounted(async () => {
     ui.actions.setTitle('Mis turnos')
     store.actions.setDate(appStore.state.selectedItem.id)
-    store.actions.getShiftsByDate(0)
+    await store.actions.getShiftsByDate(0)
+    processShifts()
 })
 
+const processShifts = () => {
+    store.state.hourRange.forEach(x => {
+        const sh = {
+            hour: x.hour,
+            selected: false,
+            occupation: x.occupation
+        }
+        const fnd = store.state.currShifts.shifts.find(h => h.id === x.hour)
+        if (fnd) {
+            sh.selected = true
+        }
+        localShifts.value.push(sh)
+    })
+}
+const onSelection = (e) => {
+    console.log('checkbox value:', e.selected)
+    ui.actions.setPreventBack(true)
+    return new Promise((resolve) => {
+        if (ui.state.preventBack) {
+            if (e.selected) {
+                if (e.occupation === 5) {
+                    ui.actions.notify('Ya se llegó al límite de personas por turno!', 'info')
+                } else {
+                    prompt.value = true
+                    dialogMessage.value = 'Esta seguro que desea reservar este turno?'
+                    onAcceptDialog.value = () => {
+                        prompt.value = false
+                        ui.actions.setPreventBack(false)
+                        e.selected = true
+                        e.occupation++
+                        resolve(true)
+                    }
+                    onCancelDialog.value = () => {
+                        prompt.value = false
+                        resolve(false)
+                    }
+                }
+            } else {
+                prompt.value = true
+                dialogMessage.value = 'Esta seguro que desea cancelar el turno?'
+                onAcceptDialog.value = () => {
+                    prompt.value = false
+                    ui.actions.setPreventBack(false)
+                    e.selected = false
+                    e.occupation--
+                    resolve(true)
+                }
+                onCancelDialog.value = () => {
+                    prompt.value = false
+                    resolve(false)
+                }
+            }
+        }
+    })
+}
 const onPrevDay = () => {
     store.actions.getShiftsByDate(-1)
 }
 const onNextDay = () => {
     store.actions.getShiftsByDate(+1)
 }
-const evalCheck = (hr) => {
-
-}
-const save = (item) => {
-    store.actions.saveShift(item)
-    router.push('/shifts')
-}
-
 </script>
 
 <style scoped>

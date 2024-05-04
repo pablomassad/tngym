@@ -11,27 +11,27 @@ let srv
 
 const state = reactive({
     hourRange: [
-        { hour: 8, selected: false, occupation: 0 },
-        { hour: 9, selected: false, occupation: 0 },
-        { hour: 10, selected: false, occupation: 0 },
-        { hour: 11, selected: false, occupation: 0 },
-        { hour: 12, selected: false, occupation: 0 },
-        { hour: 13, selected: false, occupation: 0 },
-        { hour: 14, selected: false, occupation: 0 },
-        { hour: 15, selected: false, occupation: 0 },
-        { hour: 16, selected: false, occupation: 0 },
-        { hour: 17, selected: false, occupation: 0 },
-        { hour: 18, selected: false, occupation: 0 },
-        { hour: 19, selected: false, occupation: 0 },
-        { hour: 20, selected: false, occupation: 0 },
-        { hour: 21, selected: false, occupation: 0 },
-        { hour: 22, selected: false, occupation: 0 }
+        { hour: 8, occupation: 0 },
+        { hour: 9, occupation: 2 },
+        { hour: 10, occupation: 1 },
+        { hour: 11, occupation: 0 },
+        { hour: 12, occupation: 5 },
+        { hour: 13, occupation: 0 },
+        { hour: 14, occupation: 0 },
+        { hour: 15, occupation: 0 },
+        { hour: 16, occupation: 0 },
+        { hour: 17, occupation: 0 },
+        { hour: 18, occupation: 1 },
+        { hour: 19, occupation: 3 },
+        { hour: 20, occupation: 2 },
+        { hour: 21, occupation: 4 },
+        { hour: 22, occupation: 0 }
     ],
-    shift: {
+    currShifts: {
         id: 240505,
         shifts: [
             {
-                id: '8',
+                id: 8,
                 users: [
                     {
                         id: 'pmassad@yahoo.com',
@@ -40,7 +40,7 @@ const state = reactive({
                 ]
             },
             {
-                id: '12',
+                id: 12,
                 users: [
                     {
                         id: 'pazmassad@gmail.com',
