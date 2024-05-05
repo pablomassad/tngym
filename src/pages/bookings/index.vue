@@ -3,19 +3,24 @@
         <q-page @scroll="handleScroll">
             <div v-if="loadingPrev">cargando días anteriores...</div>
             <div v-if="appStore.state.myBookings">
-                <div v-for="d in Object.keys(appStore.state.myBookings.bookings)" :key="d" class="bookingCard">
-                    <div class="itemStyle"> {{ formatDay(d) }}</div>
-                    <div>
-                        <div v-for="hr in appStore.state.myBookings.bookings[d]" :key="hr" class="shiftList">
-                            <div class="hours">{{ hr }}:00 hs</div>
+                <div class="monthFrame">
+                    <div class="monthName">Mayo</div>
+                    <div class="itemsFrame">
+                        <div v-for="d in Object.keys(appStore.state.myBookings.bookings)" :key="d" class="bookingCard">
+                            <div class="itemStyle"> {{ formatDay(d) }}</div>
+                            <div>
+                                <div v-for="hr in appStore.state.myBookings.bookings[d]" :key="hr" class="shiftList">
+                                    <div class="hours">{{ hr }}:00 hs</div>
+                                </div>
+                            </div>
+                            <q-icon color="primary" name="edit" size="sm" @click="goShift(d)" />
                         </div>
                     </div>
-                    <q-icon color="primary" name="edit" size="sm" @click="goShift(d)" />
                 </div>
             </div>
             <div v-if="loadingNext">cargando proximos días...</div>
         </q-page>
-        <q-btn round @click="goShift" color="primary" size="md" icon="add" class="addShift"></q-btn>
+        <q-btn round @click="goShift()" color="primary" size="md" icon="add" class="addShift"></q-btn>
     </div>
 </template>
 
@@ -85,12 +90,27 @@ const goShift = (d) => {
 .bookingCard {
     display: grid;
     grid-template-columns: 80px 1fr 35px;
-    box-shadow: inset 1px 1px 3px gray;
-    background: white;
-    border-radius: 8px;
     margin: 16px;
     padding: 8px;
     max-width: 400px;
+    border-bottom: 1px solid lightgray;
+}
+
+.monthFrame {
+    margin: auto;
+    max-width: 400px;
+}
+
+.monthName {
+    font-size: 18px;
+    padding: 20px 20px 0px;
+}
+
+.itemsFrame {
+    background-color: white;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 5px;
 }
 
 .shiftList {

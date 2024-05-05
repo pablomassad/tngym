@@ -10,12 +10,12 @@
         <div class="navFrame">
             <div class="month">{{ store.state.month }}</div>
             <div class="grdNav">
-                <q-icon name="navigate_before" class="arrow" @click="onPrevDay"></q-icon>
+                <q-icon name="navigate_before" class="arrow" @click="onNavDay(-1)"></q-icon>
                 <div class="dateFrame">
                     <div class="dateStyle">{{ store.state.dayName }}</div>
                     <div class="dateStyle">{{ store.state.dayNum }}</div>
                 </div>
-                <q-icon name="navigate_next" class="arrow" @click="onNextDay"></q-icon>
+                <q-icon name="navigate_next" class="arrow" @click="onNavDay(1)"></q-icon>
             </div>
         </div>
         <div class="hoursFrame">
@@ -59,23 +59,24 @@ const transactions = []
 
 onMounted(async () => {
     ui.actions.setTitle('Disponibilidad')
-    store.actions.setDate(appStore.state.selectedDate)
     await store.actions.getShiftsByDate(0)
     processShifts()
 })
 
 const processShifts = () => {
     localShifts.value = []
-    const userShifts = appStore.state.myBookings.bookings[store.state.strDate]
+    const userShifts = appStore.state.myBookings.bookings[appStore.state.selectedDate]
     store.state.hourRange.forEach(h => {
         const sh = {
             hour: h,
             selected: false,
             total: 0
         }
-        const cnt = store.state?.countersByDate.shiftsCounter[sh.hour]
-        if (cnt) {
-            sh.total = cnt
+        if (store.state.countersByDate.shiftCounter) {
+            const cnt = store.state.countersByDate.shiftCounter[sh.hour]
+            if (cnt) {
+                sh.total = cnt
+            }
         }
         const shiftFnd = userShifts?.find(x => x === sh.hour)
         if (shiftFnd) {
@@ -107,37 +108,35 @@ const saveTransaction = (e) => {
     console.log('transaction:', e)
     transactions.push(e)
 }
-const onPrevDay = async () => {
-    await store.actions.getShiftsByDate(-1)
-    processShifts()
-}
-const onNextDay = async () => {
-    await store.actions.getShiftsByDate(+1)
-    processShifts()
-}
-const close = () => {
-    return new Promise((resolve) => {
-        if (dirty.value) {
-            prompt.value = true
-            dialogMessage.value = 'Hay cambios pendientes. Si acepta los cambios se perderán!'
-            onAcceptDialog.value = () => {
-                prompt.value = false
-                router.go(-1)
-                resolve(true)
-            }
-            onCancelDialog.value = () => {
-                prompt.value = false
-                resolve(false)
-            }
-        } else {
-            router.go(-1)
-            resolve(true)
-        }
+const onNavDay = async (inc) => {
+    evalStatus(async () => {
+        await store.actions.getShiftsByDate(inc)
+        processShifts()
     })
 }
-const save = () => {
+const close = () => {
+    evalStatus(() => {
+        router.go(-1)
+    })
+}
+const evalStatus = (cb) => {
+    if (dirty.value) {
+        prompt.value = true
+        dialogMessage.value = 'Hay cambios pendientes. Si acepta los cambios se perderán!'
+        onAcceptDialog.value = () => {
+            prompt.value = false
+            dirty.value = false
+            cb()
+        }
+        onCancelDialog.value = () => {
+            prompt.value = false
+        }
+    } else { cb() }
+}
+const save = async () => {
     console.log('transactions', transactions)
-    store.actions.save(transactions)
+    await store.actions.save(transactions)
+    dirty.value = false
 }
 </script>
 

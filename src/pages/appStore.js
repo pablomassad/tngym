@@ -31,6 +31,9 @@ const actions = {
     },
     async addShift (hr) {
         console.log('store addShift:', hr)
+        if (!state.myBookings.bookings[state.selectedDate]) {
+            state.myBookings.bookings[state.selectedDate] = []
+        }
         const fnd = state.myBookings.bookings[state.selectedDate].find(x => x === hr)
         if (!fnd) {
             state.myBookings.bookings[state.selectedDate].push(hr)
