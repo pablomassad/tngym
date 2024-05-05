@@ -10,50 +10,25 @@ import addDays from 'date-fns/addDays'
 let srv
 
 const state = reactive({
-    hourRange: [
-        { hour: 8, occupation: 0 },
-        { hour: 9, occupation: 2 },
-        { hour: 10, occupation: 1 },
-        { hour: 11, occupation: 0 },
-        { hour: 12, occupation: 5 },
-        { hour: 13, occupation: 0 },
-        { hour: 14, occupation: 0 },
-        { hour: 15, occupation: 0 },
-        { hour: 16, occupation: 0 },
-        { hour: 17, occupation: 0 },
-        { hour: 18, occupation: 1 },
-        { hour: 19, occupation: 3 },
-        { hour: 20, occupation: 2 },
-        { hour: 21, occupation: 4 },
-        { hour: 22, occupation: 0 }
+    hourRange: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22],
+    shiftsCounterByDate: [
+        {
+            id: 8,
+            total: 3
+        },
+        {
+            id: 9,
+            total: 2
+        },
+        {
+            id: 10,
+            total: 1
+        },
+        {
+            id: 18,
+            total: 5
+        }
     ],
-    currShifts: {
-        id: 240505,
-        shifts: [
-            {
-                id: 8,
-                users: [
-                    {
-                        id: 'pmassad@yahoo.com',
-                        name: 'Pablo'
-                    }
-                ]
-            },
-            {
-                id: 12,
-                users: [
-                    {
-                        id: 'pazmassad@gmail.com',
-                        name: 'Maria Paz Massad'
-                    },
-                    {
-                        id: 'patriciagonzalezvillar@gmail.com',
-                        name: 'Patricia'
-                    }
-                ]
-            }
-        ]
-    },
     strDate: '',
     month: '',
     dayName: '',
@@ -63,7 +38,7 @@ const actions = {
     setDate (d) {
         state.strDate = d.toString()
     },
-    getShiftsByDate (inc) {
+    async getShiftsByDate (inc) {
         console.log('store getShiftsByDate:', inc)
         let fecha = parse(state.strDate, 'yyMMdd', new Date())
         fecha = addDays(fecha, inc)

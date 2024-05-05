@@ -2,14 +2,14 @@
     <div>
         <q-page @scroll="handleScroll">
             <div v-if="loadingPrev">cargando días anteriores...</div>
-            <div v-for="item in store.state.bookings" :key="item.id" class="bookingCard">
-                <div class="itemStyle"> {{ item.day }}</div>
+            <div v-for="item in store.state.myBookings.bookings" :key="item.id" class="bookingCard">
+                <div class="itemStyle"> {{ formatDay(item.id) }}</div>
                 <div>
-                    <div v-for="shift in item.shifts" :key="shift.id" class="shiftList">
-                        <div class="hours">{{ shift.id }}:00 hs</div>
+                    <div v-for="hr in item.shifts" :key="hr" class="shiftList">
+                        <div class="hours">{{ hr }}:00 hs</div>
                     </div>
                 </div>
-                <q-icon color="primary" name="edit" size="sm" @click="goShift(item)" />
+                <q-icon color="primary" name="edit" size="sm" @click="goShift(item.id)" />
             </div>
             <div v-if="loadingNext">cargando proximos días...</div>
         </q-page>
@@ -23,6 +23,10 @@ import { ui } from 'fwk-q-ui'
 import store from './store'
 import appStore from 'src/pages/appStore'
 import { useRouter } from 'vue-router'
+import { format } from 'date-fns'
+import { es } from 'date-fns/locale'
+import parse from 'date-fns/parse'
+import addDays from 'date-fns/addDays'
 
 const router = useRouter()
 
@@ -55,8 +59,16 @@ const loadPrev = () => {
 const loadNext = () => {
     // Implementa la lógica para cargar más contenido al hacer scroll hacia abajo
 }
+const formatDay = (date) => {
+    const fecha = parse(date.toString(), 'yyMMdd', new Date())
+    // const month = format(fecha, 'MMMM', { locale: es })
+    const dayName = format(fecha, 'EEEE', { locale: es })
+    const dayNum = format(fecha, 'd')
+    const result = dayName + ' ' + dayNum
+    return result
+}
 const goShift = (item) => {
-    appStore.actions.setSelectedItem(item)
+    appStore.actions.setselectedItem(item)
     router.push('/shifts')
 }
 

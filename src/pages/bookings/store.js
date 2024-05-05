@@ -5,49 +5,24 @@ import { ui } from 'fwk-q-ui'
 let srv
 
 const state = reactive({
-    bookings: [
-        {
-            id: 240505,
-            shifts: [
-                {
-                    id: '8',
-                    users: [
-                        {
-                            id: 'pmassad@yahoo.com',
-                            name: 'Pablo'
-                        }
-                    ]
-                },
-                {
-                    id: '12',
-                    users: [
-                        {
-                            id: 'pazmassad@gmail.com',
-                            name: 'Maria Paz Massad'
-                        },
-                        {
-                            id: 'patriciagonzalezvillar@gmail.com',
-                            name: 'Patricia'
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            id: 240506,
-            shifts: [
-                {
-                    id: '10',
-                    users: [
-                        {
-                            id: 'pmassad@yahoo.com',
-                            name: 'Pablo'
-                        }
-                    ]
-                }
-            ]
-        }
-    ]
+    myBookings: {
+        id: 'pmassad@yahoo.com',
+        name: 'Pablo Massad',
+        bookings: [
+            {
+                id: 240506,
+                shifts: [8]
+            },
+            {
+                id: 240511,
+                shifts: [8, 9, 18]
+            },
+            {
+                id: 240512,
+                shifts: [9, 10]
+            }
+        ]
+    }
 })
 const actions = {
     async getPrev (day) {

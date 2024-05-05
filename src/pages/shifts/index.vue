@@ -13,10 +13,12 @@
     <div class="hoursFrame">
         <div v-for="item in localShifts" :key="item">
             <div class="hourCard">
-                <q-checkbox v-model="item.selected" @update:model-value="onSelection(item)"></q-checkbox>
+                <q-checkbox v-model="item.selected" @update:model-value="onSelection(item)" style="justify-self: left;"></q-checkbox>
                 <div class="hour"> {{ item.hour }}:00 hs</div>
                 <div class="vacancy">
-                    <q-rating size="md" v-model="item.occupation" icon="person" color="primary" readonly />
+                    <div>{{ item.occupation }} / 5</div>
+                    <img src="svgs/person.svg" class="iconPerson" />
+                    <!--<q-rating size="md" v-model="item.occupation" icon="person" color="primary" readonly />-->
                 </div>
             </div>
         </div>
@@ -40,20 +42,20 @@ const onAcceptDialog = ref()
 const onCancelDialog = ref()
 
 onMounted(async () => {
-    ui.actions.setTitle('Mis turnos')
-    store.actions.setDate(appStore.state.selectedItem.id)
+    ui.actions.setTitle('Disponibilidad')
+    store.actions.setDate(appStore.state.selectedItem)
     await store.actions.getShiftsByDate(0)
     processShifts()
 })
 
 const processShifts = () => {
-    store.state.hourRange.forEach(x => {
+    store.state.hourRange.forEach(h => {
         const sh = {
-            hour: x.hour,
+            hour: h,
             selected: false,
-            occupation: x.occupation
+            occupation: 0
         }
-        const fnd = store.state.currShifts.shifts.find(h => h.id === x.hour)
+        const fnd = store.state.shiftsCounterByDate.find(x => x.id === h)
         if (fnd) {
             sh.selected = true
         }
@@ -68,6 +70,7 @@ const onSelection = (e) => {
             if (e.selected) {
                 if (e.occupation === 5) {
                     ui.actions.notify('Ya se llegó al límite de personas por turno!', 'info')
+                    e.selected = false
                 } else {
                     prompt.value = true
                     dialogMessage.value = 'Esta seguro que desea reservar este turno?'
@@ -80,6 +83,7 @@ const onSelection = (e) => {
                     }
                     onCancelDialog.value = () => {
                         prompt.value = false
+                        e.selected = false
                         resolve(false)
                     }
                 }
@@ -95,6 +99,7 @@ const onSelection = (e) => {
                 }
                 onCancelDialog.value = () => {
                     prompt.value = false
+                    e.selected = true
                     resolve(false)
                 }
             }
@@ -139,16 +144,21 @@ const onNextDay = () => {
 }
 
 .hoursFrame {
-    margin: 16px;
-    margin-top: 110px;
+    background: white;
     height: calc(100vh - 164px);
     overflow-y: auto;
+    max-width: 500px;
+    margin: auto;
+    margin-top: 110px;
 }
 
 .hourCard {
     display: grid;
     align-items: center;
     grid-template-columns: 40px 120px 1fr;
+    margin: 5px 10px;
+    border-bottom: 1px solid gray;
+    margin: 10px 20px;
 }
 
 .dateStyle {
@@ -190,5 +200,13 @@ const onNextDay = () => {
     position: fixed;
     bottom: 10px;
     right: 10px;
+}
+
+.vacancy {
+    font-size: 18px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin: 0 10px;
 }
 </style>

@@ -261,7 +261,7 @@ const setMockMode = () => {
 .body--light {
     .frameLayout {
         //background: -webkit-radial-gradient(#fff, #737373 115%) !important;
-        background: #cdcdd1;
+        background: #e6e6eb;
     }
 }
 

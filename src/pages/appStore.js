@@ -14,9 +14,9 @@ const actions = {
     async init () {
         srv = await axios.create()
     },
-    setSelectedItem (item) {
-        console.log('store setSelectedItem:', item)
-        state.selectedItem = item
+    setselectedItem (date) {
+        console.log('store setselectedItem:', date)
+        state.selectedItem = date
     },
     async logRing (data) {
         let doc = await fb.getDocument('countByDay', data.dia)
