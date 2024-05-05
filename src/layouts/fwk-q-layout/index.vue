@@ -7,14 +7,14 @@
                         <div class="bar">
                             <img src="images/tn.png" class="logo" />
                             <div class="text-h6 title">{{ ui.state.title }}</div>
-                            <div></div>
+                            <div class="logo"></div>
                         </div>
                     </slot>
                 </q-toolbar-title>
                 <slot>
                     <!--<div style="font-size:medium">v{{ main.state.environment.versionName }}</div>-->
                 </slot>
-                <q-icon name="more_vert" style="margin-right: -10px;" @click="rightDrawerOpen = !rightDrawerOpen">
+                <!--<q-icon name="more_vert" style="margin-right: -10px;" @click="rightDrawerOpen = !rightDrawerOpen">
                     <q-menu transition-show="flip-right" transition-hide="flip-left">
                         <q-item-section v-close-popup>
                             <toggle-dark-mode v-if="!disableDark" :mode="darkmode" label="Modo Oscuro" @change="toggleMode"></toggle-dark-mode>
@@ -22,7 +22,7 @@
                             </slot>
                         </q-item-section>
                     </q-menu>
-                </q-icon>
+                </q-icon>-->
             </q-toolbar>
         </q-header>
 

@@ -9,10 +9,10 @@ const routes = [
         component: () => import('layouts/MainLayout.vue'),
         children: [
             { path: '/admin', component: Admin },
-            { path: '/bookings', component: Bookings },
-            { path: '/shifts', component: Shifts }
+            { path: '/bookings', component: Bookings }
         ]
     },
+    { path: '/shifts', component: Shifts },
     { path: '/login', component: Login },
     {
         path: '/:catchAll(.*)*',

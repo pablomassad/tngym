@@ -1,28 +1,39 @@
 <template>
-    <div class="navFrame">
-        <div class="month">{{ store.state.month }}</div>
-        <div class="grdNav">
-            <q-icon name="navigate_before" class="arrow" @click="onPrevDay"></q-icon>
-            <div class="dateFrame">
-                <div class="dateStyle">{{ store.state.dayName }}</div>
-                <div class="dateStyle">{{ store.state.dayNum }}</div>
+    <div class="frame">
+        <div class="bar">
+            <div class="logo"></div>
+            <div class="text-h6 title">{{ ui.state.title }}</div>
+            <div class="logo" @click="close">
+                <q-icon name="close" size="sm" color="gray"></q-icon>
             </div>
-            <q-icon name="navigate_next" class="arrow" @click="onNextDay"></q-icon>
         </div>
-    </div>
-    <div class="hoursFrame">
-        <div v-for="item in localShifts" :key="item">
-            <div class="hourCard">
-                <q-checkbox v-model="item.selected" @update:model-value="onSelection(item)" style="justify-self: left;"></q-checkbox>
-                <div class="hour"> {{ item.hour }}:00 hs</div>
-                <div class="vacancy">
-                    <div>{{ item.occupation }} / 5</div>
-                    <img src="svgs/person.svg" class="iconPerson" />
-                    <!--<q-rating size="md" v-model="item.occupation" icon="person" color="primary" readonly />-->
+        <div class="navFrame">
+            <div class="month">{{ store.state.month }}</div>
+            <div class="grdNav">
+                <q-icon name="navigate_before" class="arrow" @click="onPrevDay"></q-icon>
+                <div class="dateFrame">
+                    <div class="dateStyle">{{ store.state.dayName }}</div>
+                    <div class="dateStyle">{{ store.state.dayNum }}</div>
+                </div>
+                <q-icon name="navigate_next" class="arrow" @click="onNextDay"></q-icon>
+            </div>
+        </div>
+        <div class="hoursFrame">
+            <div v-for="item in localShifts" :key="item">
+                <div class="hourCard">
+                    <q-checkbox v-model="item.selected" @update:model-value="onSelection(item)" style="justify-self: left;"></q-checkbox>
+                    <div class="hour"> {{ item.hour }}:00 hs</div>
+                    <div class="vacancy">
+                        <div>{{ item.total }} / 5</div>
+                        <img src="svgs/person.svg" class="iconPerson" />
+                        <!--<q-rating size="md" v-model="item.total" icon="person" color="primary" readonly />-->
+                    </div>
                 </div>
             </div>
         </div>
+        <q-btn glossy label="confirmar" @click="save" color="primary" class="btnSave" :disable="!dirty"></q-btn>
     </div>
+
     <ConfirmDialog :prompt="prompt" :message="dialogMessage" :onCancel="onCancelDialog" :onAccept="onAcceptDialog" />
 </template>
 
@@ -32,31 +43,42 @@ import { ui } from 'fwk-q-ui'
 import ConfirmDialog from 'fwk-q-confirmdialog'
 import store from './store'
 import appStore from 'src/pages/appStore'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 console.log('Shifts CONSTRUCTOR')
 
+const dirty = ref(false)
 const localShifts = ref([])
 const prompt = ref(false)
 const dialogMessage = ref()
 const onAcceptDialog = ref()
 const onCancelDialog = ref()
+const transactions = []
 
 onMounted(async () => {
     ui.actions.setTitle('Disponibilidad')
-    store.actions.setDate(appStore.state.selectedItem)
+    store.actions.setDate(appStore.state.selectedDate)
     await store.actions.getShiftsByDate(0)
     processShifts()
 })
 
 const processShifts = () => {
+    localShifts.value = []
+    const userShifts = appStore.state.myBookings.bookings[store.state.strDate]
     store.state.hourRange.forEach(h => {
         const sh = {
             hour: h,
             selected: false,
-            occupation: 0
+            total: 0
         }
-        const fnd = store.state.shiftsCounterByDate.find(x => x.id === h)
-        if (fnd) {
+        const cnt = store.state?.countersByDate.shiftsCounter[sh.hour]
+        if (cnt) {
+            sh.total = cnt
+        }
+        const shiftFnd = userShifts?.find(x => x === sh.hour)
+        if (shiftFnd) {
             sh.selected = true
         }
         localShifts.value.push(sh)
@@ -65,59 +87,98 @@ const processShifts = () => {
 const onSelection = (e) => {
     console.log('checkbox value:', e.selected)
     ui.actions.setPreventBack(true)
+    if (e.selected) {
+        if (e.total === 5) {
+            ui.actions.notify('Ya se llegó al límite de personas por turno!', 'info')
+            e.selected = false
+        } else {
+            e.selected = true
+            e.total++
+            saveTransaction(e)
+        }
+    } else {
+        e.selected = false
+        e.total--
+        saveTransaction(e)
+    }
+}
+const saveTransaction = (e) => {
+    dirty.value = true
+    console.log('transaction:', e)
+    transactions.push(e)
+}
+const onPrevDay = async () => {
+    await store.actions.getShiftsByDate(-1)
+    processShifts()
+}
+const onNextDay = async () => {
+    await store.actions.getShiftsByDate(+1)
+    processShifts()
+}
+const close = () => {
     return new Promise((resolve) => {
-        if (ui.state.preventBack) {
-            if (e.selected) {
-                if (e.occupation === 5) {
-                    ui.actions.notify('Ya se llegó al límite de personas por turno!', 'info')
-                    e.selected = false
-                } else {
-                    prompt.value = true
-                    dialogMessage.value = 'Esta seguro que desea reservar este turno?'
-                    onAcceptDialog.value = () => {
-                        prompt.value = false
-                        ui.actions.setPreventBack(false)
-                        e.selected = true
-                        e.occupation++
-                        resolve(true)
-                    }
-                    onCancelDialog.value = () => {
-                        prompt.value = false
-                        e.selected = false
-                        resolve(false)
-                    }
-                }
-            } else {
-                prompt.value = true
-                dialogMessage.value = 'Esta seguro que desea cancelar el turno?'
-                onAcceptDialog.value = () => {
-                    prompt.value = false
-                    ui.actions.setPreventBack(false)
-                    e.selected = false
-                    e.occupation--
-                    resolve(true)
-                }
-                onCancelDialog.value = () => {
-                    prompt.value = false
-                    e.selected = true
-                    resolve(false)
-                }
+        if (dirty.value) {
+            prompt.value = true
+            dialogMessage.value = 'Hay cambios pendientes. Si acepta los cambios se perderán!'
+            onAcceptDialog.value = () => {
+                prompt.value = false
+                router.go(-1)
+                resolve(true)
             }
+            onCancelDialog.value = () => {
+                prompt.value = false
+                resolve(false)
+            }
+        } else {
+            router.go(-1)
+            resolve(true)
         }
     })
 }
-const onPrevDay = () => {
-    store.actions.getShiftsByDate(-1)
-}
-const onNextDay = () => {
-    store.actions.getShiftsByDate(+1)
+const save = () => {
+    console.log('transactions', transactions)
+    store.actions.save(transactions)
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+.frame {
+    background-color: #e6e6eb;
+    height: 100vh;
+}
+
+.logo {
+    width: 50px;
+    justify-self: center;
+    text-align: center;
+}
+
+.headerFrame {
+    background: rgb(255, 255, 255);
+    font-size: 2rem;
+    padding: 0 10px;
+}
+
+.title {
+    text-align: center;
+    color: #5d5c5c
+}
+
+.bar {
+    height: 48px;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
+    color: #676565;
+    border-bottom: 1px solid lightgray;
+    /*background-color: white;*/
+    /*color: rgb(32, 109, 171);*/
+    /*box-shadow: 1px 0 4px rgb(200, 200, 200);*/
+}
+
 .arrow {
     font-size: 30px;
-    /*text-shadow: 1px 1px 1px white;*/
 }
 
 .month {
@@ -127,13 +188,18 @@ const onNextDay = () => {
 }
 
 .navFrame {
-    padding: 20px;
+    padding: 10px;
     position: fixed;
     width: 100%;
+    max-width: 400px;
+    left: 0;
+    margin: auto;
+    right: 0;
+    color: #0066a4;
 }
 
 .hour {
-    font-size: 18px;
+    font-size: 16px;
 }
 
 .grdNav {
@@ -145,20 +211,20 @@ const onNextDay = () => {
 
 .hoursFrame {
     background: white;
-    height: calc(100vh - 164px);
+    height: 572px;
     overflow-y: auto;
-    max-width: 500px;
+    max-width: 400px;
     margin: auto;
-    margin-top: 110px;
+    margin-top: 90px;
+    border-radius: 5px;
 }
 
 .hourCard {
     display: grid;
     align-items: center;
     grid-template-columns: 40px 120px 1fr;
-    margin: 5px 10px;
-    border-bottom: 1px solid gray;
-    margin: 10px 20px;
+    border-bottom: 1px solid #dedede;
+    margin: 0px 20px;
 }
 
 .dateStyle {
@@ -203,10 +269,20 @@ const onNextDay = () => {
 }
 
 .vacancy {
-    font-size: 18px;
+    font-size: 16px;
     display: flex;
     justify-content: flex-end;
     gap: 10px;
     margin: 0 10px;
+}
+
+.btnSave {
+    position: fixed;
+    bottom: 30px;
+    left: 0;
+    right: 0;
+    width: 80%;
+    max-width: 400px;
+    margin: auto;
 }
 </style>

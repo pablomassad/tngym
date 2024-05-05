@@ -125,6 +125,7 @@
 <script setup>
 import { ref } from 'vue'
 import store from './store'
+import appStore from '../appStore'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -138,6 +139,7 @@ const password = ref()
 
 const submit = async (val) => {
     const usr = await store.actions.login(val, email.value, password.value, name.value)
+    appStore.actions.setUser(usr)
     if (usr.uid) router.push('/booking')
 }
 const forgotPass = async () => {
