@@ -2,24 +2,27 @@ import { reactive, readonly } from 'vue'
 import axios from 'redaxios'
 import fb from 'fwk-q-firebase'
 import { ENVIRONMENTS } from 'src/environments'
+import { format } from 'date-fns'
+import { es } from 'date-fns/locale'
+import parse from 'date-fns/parse'
 
 let srv
 fb.initFirebase(ENVIRONMENTS.firebase)
 
 const state = reactive({
-    user: {
-        email: 'pmassad@yahoo.com'
-    },
+    user: JSON.parse(localStorage.getItem('TN_user')),
     selectedDate: undefined,
-    myBookings: undefined
+    myBookings: undefined,
+    months: {}
 })
 const actions = {
     async init () {
         srv = await axios.create()
     },
-    setUser (usr) {
-        console.log('store setUser:', usr)
-        state.user = usr
+    setUser (data) {
+        console.log('store setUser:', data)
+        state.user = data
+        localStorage.setItem('TN_user', JSON.stringify(data))
     },
     setSelectedDate (date) {
         console.log('store setSelectedDate:', date)
@@ -27,7 +30,23 @@ const actions = {
     },
     setMyBookings (doc) {
         console.log('store setMyBookings:', doc)
+        state.months = {}
+        Object.keys(doc.bookings).forEach((d, i) => {
+            const fecha = parse(d, 'yyMMdd', new Date())
+            const mes = format(fecha, 'MMMM', { locale: es })
+            const fndMonth = Object.values(state.months).find(val => val === mes)
+            if (!fndMonth) {
+                state.months[i] = mes
+            }
+        })
+        console.log('months:', state.months)
         state.myBookings = doc
+    },
+    async logout () {
+        console.log('store logout')
+        actions.setUser(null)
+        await fb.logout()
+        window.location.reload()
     },
     async addShift (hr) {
         console.log('store addShift:', hr)
@@ -36,7 +55,7 @@ const actions = {
         }
         const fnd = state.myBookings.bookings[state.selectedDate].find(x => x === hr)
         if (!fnd) {
-            state.myBookings.bookings[state.selectedDate].push(hr)
+            orderedInsert(state.myBookings.bookings[state.selectedDate], hr)
         }
         const res = await fb.setDocument('users', state.myBookings, state.user.email)
     },
@@ -47,7 +66,7 @@ const actions = {
         const res = await fb.setDocument('users', state.myBookings, state.user.email)
     },
     async getMyBookings () {
-        const doc = await fb.getDocument('users', 'pmassad@yahoo.com')
+        const doc = await fb.getDocument('users', state.user.email)
         if (doc) {
             actions.setMyBookings(doc)
         }
@@ -73,4 +92,14 @@ const actions = {
 export default {
     state: readonly(state),
     actions
+}
+
+function orderedInsert (array, str) {
+    let i = 0
+    const numero = Number(str)
+    while (i < array.length && Number(array[i]) < numero) {
+        i++
+    }
+    array.splice(i, 0, numero.toString())
+    return array
 }

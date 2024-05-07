@@ -5,57 +5,6 @@
                 <img src="images/tnFull.png" class="logo" />
             </div>
             <div class="loginFrame">
-                <div class="panel" v-if="false">
-                    <q-tabs v-model="tab" class="text-grey" active-color="primary" indicator-color="primary" align="justify">
-                        <q-tab name="login" label="Ingresar" />
-                        <q-tab name="register" label="Registrarse" />
-                    </q-tabs>
-
-                    <q-tab-panels v-model="tab" animated style="margin-bottom: -10px;text-align: center;">
-                        <q-tab-panel name="login" class="loginPanel">
-                            <q-input filled color="black" v-model="email" label="Correo electrónico">
-                                <template v-slot:append>
-                                    <q-avatar>
-                                        <q-icon name="mail" size="sm" color="gray"></q-icon>
-                                    </q-avatar>
-                                </template>
-                            </q-input>
-                            <q-input filled type="password" v-model="password" label="Contraseña" color="black">
-                                <template v-slot:append>
-                                    <q-avatar>
-                                        <q-icon name="lock" size="sm" color="gray" />
-                                    </q-avatar>
-                                </template>
-                            </q-input>
-                            <div class="forgotPwd" @click="forgotPass">
-                                Olvidaste tu contraseña?
-                            </div>
-                        </q-tab-panel>
-                        <q-tab-panel name="register" class="registerPanel">
-                            <q-input filled color="black" v-model="name" label="Nombre">
-                                <template v-slot:append>
-                                    <q-avatar>
-                                        <q-icon name="person" size="sm" color="gray"></q-icon>
-                                    </q-avatar>
-                                </template>
-                            </q-input>
-                            <q-input filled color="black" v-model="email" label="Correo electrónico">
-                                <template v-slot:append>
-                                    <q-avatar>
-                                        <q-icon name="mail" size="sm" color="gray"></q-icon>
-                                    </q-avatar>
-                                </template>
-                            </q-input>
-                            <q-input filled type="password" v-model="password" label="Contraseña" color="black">
-                                <template v-slot:append>
-                                    <q-avatar>
-                                        <q-icon name="lock" size="sm" color="gray" />
-                                    </q-avatar>
-                                </template>
-                            </q-input>
-                        </q-tab-panel>
-                    </q-tab-panels>
-                </div>
                 <div class="panel">
                     <div class="loginPanel" v-if="tab === 'login'">
                         <q-input filled color="black" v-model="email" label="Correo electrónico">
@@ -123,7 +72,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import store from './store'
 import appStore from '../appStore'
 import { useRouter } from 'vue-router'
@@ -137,10 +86,16 @@ const name = ref()
 const email = ref()
 const password = ref()
 
+onMounted(() => {
+    if (appStore.state.user) {
+        console.log('usuario logueado previamente')
+        router.push('/bookings')
+    }
+})
 const submit = async (val) => {
     const usr = await store.actions.login(val, email.value, password.value, name.value)
-    appStore.actions.setUser(usr)
-    if (usr.uid) router.push('/booking')
+    appStore.actions.setUser(usr.user)
+    if (appStore.state.user) router.push('/bookings')
 }
 const forgotPass = async () => {
     store.actions.forgotPass(email.value)

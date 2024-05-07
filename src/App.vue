@@ -19,7 +19,7 @@ onMounted(() => {
             isMobile: false,
             appname: 'tngym',
             origApp: 'tngym',
-            tool: '/bookings'
+            tool: '/login'
         },
         data: {}
     }

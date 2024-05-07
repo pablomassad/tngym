@@ -3,24 +3,26 @@
         <q-page @scroll="handleScroll">
             <div v-if="loadingPrev">cargando días anteriores...</div>
             <div v-if="appStore.state.myBookings">
-                <div class="monthFrame">
-                    <div class="monthName">Mayo</div>
-                    <div class="itemsFrame">
-                        <div v-for="d in Object.keys(appStore.state.myBookings.bookings)" :key="d" class="bookingCard">
+                <div class="itemsFrame">
+                    <div v-for="(d, idx) in Object.keys(appStore.state.myBookings.bookings)" :key="idx">
+                        <div v-if="appStore.state.months[idx]">
+                            <div class="monthName"> {{ appStore.state.months[idx] }} </div>
+                        </div>
+                        <div class="bookingCard">
                             <div class="itemStyle"> {{ formatDay(d) }}</div>
                             <div>
                                 <div v-for="hr in appStore.state.myBookings.bookings[d]" :key="hr" class="shiftList">
                                     <div class="hours">{{ hr }}:00 hs</div>
                                 </div>
                             </div>
-                            <q-icon color="primary" name="edit" size="sm" @click="goShift(d)" />
+                            <q-icon color="primary" name="edit" size="sm" @click="goShift(d)" class="editShift" />
                         </div>
                     </div>
                 </div>
             </div>
             <div v-if="loadingNext">cargando proximos días...</div>
         </q-page>
-        <q-btn round @click="goShift()" color="primary" size="md" icon="add" class="addShift"></q-btn>
+        <q-btn round @click="goShift()" glossy color="primary" size="lg" icon="add" class="addShift"></q-btn>
     </div>
 </template>
 
@@ -40,7 +42,8 @@ console.log('Bookings Contructor.........')
 const loadingPrev = ref(false)
 const loadingNext = ref(false)
 
-onMounted(() => {
+onMounted(async () => {
+    console.log('onMounted booking')
     ui.actions.setTitle('Mis reservas')
     appStore.actions.getMyBookings()
 })
@@ -67,7 +70,6 @@ const loadNext = () => {
 }
 const formatDay = (date) => {
     const fecha = parse(date, 'yyMMdd', new Date())
-    // const month = format(fecha, 'MMMM', { locale: es })
     const dayName = format(fecha, 'EEEE', { locale: es })
     const dayNum = format(fecha, 'd')
     const result = dayName + ' ' + dayNum
@@ -89,28 +91,24 @@ const goShift = (d) => {
 
 .bookingCard {
     display: grid;
-    grid-template-columns: 80px 1fr 35px;
-    margin: 16px;
+    grid-template-columns: 90px 1fr 30px;
+    margin: 4px 4px -1px 10px;
     padding: 8px;
     max-width: 400px;
     border-bottom: 1px solid lightgray;
 }
 
-.monthFrame {
-    margin: auto;
-    max-width: 400px;
-}
-
 .monthName {
     font-size: 18px;
     padding: 20px 20px 0px;
+    background: #e6e6eb;
+    text-transform: capitalize;
 }
 
 .itemsFrame {
     background-color: white;
-    padding: 10px;
-    margin: 10px;
-    border-radius: 5px;
+    max-width: 400px;
+    margin: auto;
 }
 
 .shiftList {
@@ -123,7 +121,11 @@ const goShift = (d) => {
 
 .addShift {
     position: fixed;
-    bottom: 10px;
-    right: 10px;
+    bottom: 20px;
+    right: 20px;
+}
+
+.editShift {
+    justify-self: center;
 }
 </style>

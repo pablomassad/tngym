@@ -210,12 +210,18 @@ const save = async () => {
 
 .hoursFrame {
     background: white;
-    height: 572px;
+    height: calc(100vh - 220px);
     overflow-y: auto;
     max-width: 400px;
     margin: auto;
     margin-top: 90px;
     border-radius: 5px;
+}
+
+@media screen and (min-height: 800px) {
+    .hoursFrame {
+        height: 572px;
+    }
 }
 
 .hourCard {

@@ -1,7 +1,6 @@
 const fs = require('fs')
 const path = require('path')
 const execSync = require('child_process').execSync
-const professionals = require('./src/pages/professionals.json')
 
 // eslint-disable-next-line no-extend-native
 String.prototype.lpad = function (padString, length) {
@@ -10,12 +9,8 @@ String.prototype.lpad = function (padString, length) {
     return str.valueOf()
 }
 
-updateVersion()
-professionals.forEach(usr => {
-    updateUser(usr.topic)
-    buildApk()
-    deployApk(usr.topic)
-})
+buildApk()
+deployApk()
 
 function updateVersion () {
     const bufVer = fs.readFileSync(path.join(__dirname, '/android-RingQR/app/src/main/java/com/pp/ringqr/RingQRApp.kt'))
@@ -51,29 +46,7 @@ function updateVersion () {
     console.log('#########################')
     console.log('')
 }
-function updateUser (name) {
-    const bufUser = fs.readFileSync(path.join(__dirname, '/android-RingQR/app/src/main/java/com/pp/ringqr/RingQRApp.kt'))
-    let strUser = bufUser.toString()
 
-    const regEnvId = /( var topicname: String = )(.\w*")/gm
-    strUser = strUser.replaceAll(regEnvId, ($0, $1, $2) => {
-        // console.log('$0:', $0)
-        // console.log('$1:', $1)
-        // console.log('$2:', $2)
-        const match = $1 + `"${name}"`
-        console.log('new Name => ' + match)
-        return match
-    })
-
-    console.log('Actualiza RingQRApp')
-    fs.writeFileSync(path.join(__dirname, '/android-RingQR/app/src/main/java/com/pp/ringqr/RingQRApp.kt'), strUser, err => {
-        if (err === null) {
-            console.log('Actualizacion RingQRApp OK')
-        } else {
-            console.log('Error actualizando RingQRApp: ', err)
-        }
-    })
-}
 function buildApk () {
     /// /////////////////////////////////////////////////////////////////////////////
     // GENERA nueva APK
@@ -81,7 +54,15 @@ function buildApk () {
     console.log('Genera nueva apk')
     console.log('...............................')
 
-    process.chdir('android-RingQR')
+    execSync('quasar build', {
+        stdio: 'inherit'
+    })
+
+    execSync('npx cap sync', {
+        stdio: 'inherit'
+    })
+
+    process.chdir('android')
 
     // execSync('./gradlew assembleRelease', {
     //    stdio: 'inherit'
@@ -101,10 +82,10 @@ function deployApk (name) {
     /// /////////////////////////////////////////////////////////////////////////////
     // COPIA APK al destino
     /// /////////////////////////////////////////////////////////////////////////////
-    const dest = `/Users/pablin/My Drive/PP/P&P Soft/RingQR/ring_${name}.apk`
+    const dest = '/Users/pablin/My Drive/PP/P&P Soft/TNGym/tnGym.apk'
     console.log('Copiando apk a: ', dest)
     fs.copyFileSync(
-        './android-RingQR/app/build/outputs/apk/debug/app-debug.apk',
+        './android/app/build/outputs/apk/debug/app-debug.apk',
         dest
     )
 

@@ -14,7 +14,7 @@
                 <slot>
                     <!--<div style="font-size:medium">v{{ main.state.environment.versionName }}</div>-->
                 </slot>
-                <!--<q-icon name="more_vert" style="margin-right: -10px;" @click="rightDrawerOpen = !rightDrawerOpen">
+                <q-icon name="more_vert" style="margin-right: -10px;" @click="rightDrawerOpen = !rightDrawerOpen">
                     <q-menu transition-show="flip-right" transition-hide="flip-left">
                         <q-item-section v-close-popup>
                             <toggle-dark-mode v-if="!disableDark" :mode="darkmode" label="Modo Oscuro" @change="toggleMode"></toggle-dark-mode>
@@ -22,7 +22,7 @@
                             </slot>
                         </q-item-section>
                     </q-menu>
-                </q-icon>-->
+                </q-icon>
             </q-toolbar>
         </q-header>
 
@@ -239,12 +239,13 @@ const setMockMode = () => {
 
 .title {
     text-align: center;
-    font-weight: bold;
+    /*font-weight: bold;*/
 }
 
 .bar {
     display: flex;
     flex-direction: row;
+    align-items: center;
     justify-content: space-between;
 }
 
