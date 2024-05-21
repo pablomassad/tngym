@@ -11,6 +11,7 @@ export const ENVIRONMENTS = {
         storageBucket: 'pp-tn-6078f.appspot.com',
         messagingSenderId: '578961223658',
         appId: '1:578961223658:web:04b61ead4e5d94577f0c93',
-        measurementId: 'G-6NEGB5NZ3Y'
+        measurementId: 'G-6NEGB5NZ3Y',
+        vapidKey: 'BJdgrKo0Czi1Kj1mTLnZhNNW-_R08gWULZ_tKjuPbkLerxZXZMx98b4vt5vMYap1pqZdrlje-jU8CFDqFpis3ek'
     }
 }

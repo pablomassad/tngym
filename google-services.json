@@ -12,7 +12,12 @@
           "package_name": "com.pp.tn"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "578961223658-km9a8uk0aqbl294ngehpsr19kec63idp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCXO0qGu81RTm5eNAIGX3wrC8TdMIriAMM"
@@ -20,7 +25,41 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "578961223658-0d98f8ihof86dv8lmvrn3or520kimn3h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:578961223658:android:8b956c10e05621b47f0c93",
+        "android_client_info": {
+          "package_name": "com.pp.tngym"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "578961223658-km9a8uk0aqbl294ngehpsr19kec63idp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXO0qGu81RTm5eNAIGX3wrC8TdMIriAMM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "578961223658-0d98f8ihof86dv8lmvrn3or520kimn3h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

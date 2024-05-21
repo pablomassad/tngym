@@ -11,8 +11,17 @@ const config: CapacitorConfig = {
     webContentsDebuggingEnabled: true
   },
   plugins: {
+    FirebaseAuthentication: {
+      ios: {
+        providers: ['google.com']
+      },
+      android: {
+        providers: ['google.com'],
+        redirectUrl: 'YOUR_REDIRECT_URL_HERE'
+      }
+    },
     FirebaseMessaging: {
-      presentationOptions: ["badge", "sound", "alert"],
+      presentationOptions: ['badge', 'sound', 'alert'],
     },
     Badge: {
       persist: true,
